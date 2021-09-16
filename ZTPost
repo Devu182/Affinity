@@ -1,0 +1,31 @@
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class ZTPost
+{
+    private static HttpURLConnection connection;
+    public static void main(String args[]) throws IOException {
+        URL url = new URL("https://my.zerotier.com/api/network/8850338390f8d726");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization","Bearer "+"ExjL8vLTVknhXXU3NvxqTyUvRhN1fOlg");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        //final String new_param = "{\n"+ "\"new_param\": \"added\"}"; //"\"id\": \"1234\" +
+        final String params = "{\n"+ "\"description\": \"updated\"}";
+        OutputStream os = connection.getOutputStream();
+        //os.write(new_param.getBytes());
+        os.write(params.getBytes());
+        os.flush();
+        os.close();
+        int response = connection.getResponseCode();
+        if( response == 200 || response == 201 )
+        {
+            System.out.println("Post request successful");
+        }
+        else
+            System.out.println("Request failed");
+    }
+}
