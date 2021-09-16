@@ -1,0 +1,46 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class ZeroTierAPI
+{
+    private static HttpURLConnection connection;
+
+    public static void main(String[] args) throws Exception
+    {
+        URL url1 = new URL("https://my.zerotier.com/api/network//8850338390f8d726/member"); //");
+        ///8850338390f8d726/member /b6079f73c6fe9d5a
+        connection = (HttpURLConnection) url1.openConnection();
+        connection.setRequestProperty("Authorization","Bearer "+"ExjL8vLTVknhXXU3NvxqTyUvRhN1fOlg");
+        connection.setRequestMethod("GET");
+        int status = connection.getResponseCode();
+        System.out.println("Response Code: "+status);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String output;
+        StringBuffer responseContent = new StringBuffer();
+        while ((output = reader.readLine()) != null) {
+            responseContent.append(output);
+        }
+        reader.close();
+        System.out.println("Response Content:" + responseContent.toString());
+        parse(responseContent.toString());
+    }
+
+    public static String parse(String responseBody)
+    {
+        JSONArray arr1 = new JSONArray(responseBody);
+        //System.out.println(IsValid(posts));
+        for (int i = 0; i < arr1.length(); i++)
+        {
+            JSONObject obj1 = arr1.getJSONObject(i);
+            JSONObject config = obj1.getJSONObject("config");
+            JSONArray ipRange = config.getJSONArray("ipAssignmentPools");
+            System.out.println(ipRange);
+        }
+        return null;
+    }
+}
