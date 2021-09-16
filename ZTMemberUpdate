@@ -1,0 +1,59 @@
+package com.api;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+
+public class ZTMemberUpdate 
+{
+	private static HttpURLConnection conn;
+
+	public static void main(String[] args) throws IOException 
+	{
+
+        try 
+        {
+        	URL url = new URL("https://my.zerotier.com/api/network/8850338390f8d726/member/85801f15e7");
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestProperty("Authorization","bearer "+"ExjL8vLTVknhXXU3NvxqTyUvRhN1fOlg");
+			conn.setRequestMethod("POST");
+			
+			int rcode = conn.getResponseCode();
+			System.out.println("Response Code:" +rcode);
+			InputStream inputS = conn.getInputStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputS));
+			String output;
+			StringBuilder response =new StringBuilder();
+			
+			while((output=in.readLine()) != null)
+			{
+				response.append(output);
+			}
+			
+			JSONParser pars = new JSONParser();
+			Object obje=new Object();
+			obje = pars.parse(response.toString());
+			JSONArray arr = (JSONArray)obje;
+			
+			
+			for (int i = 0; i < arr.size(); i++) 
+			{
+				JSONObject member = (JSONObject) arr.get(i);
+				member.put("name", "Ravani");
+				
+				System.out.println("Record Updated : "+member);
+			}
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+
+}
